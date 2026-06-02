@@ -205,6 +205,11 @@
       height: 4px;
       flex-shrink: 0;
     }
+    /*  style for table if included in response  */ 
+    table td {
+      outline: solid 1px;
+      padding: 5px;
+    }
   </style>
 </head>
 <body>
@@ -239,6 +244,7 @@
     </div>
   </div>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
   <script>
     const messagesEl = document.getElementById('messages');
     const inputEl = document.getElementById('userInput');
@@ -253,7 +259,9 @@
       const div = document.createElement('div');
       div.className = `message ${role}${isTyping ? ' typing' : ''}`;
       // div.textContent = text;
-      div.innerHTML = marked.parse(text);;
+      // div.innerHTML = marked.parse(text);;
+      div.innerHTML = DOMPurify.sanitize(marked.parse(text));
+      
       messagesEl.appendChild(div);
       messagesEl.scrollTop = messagesEl.scrollHeight;
       return div;
