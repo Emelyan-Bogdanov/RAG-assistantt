@@ -7,6 +7,7 @@ import json
 class Model:
     def __init__(self, save_hist = True,url="https://api.deepai.org/hacking_is_a_serious_crime"):
         self.url = url
+        self.id = len(os.listdir("./model/histories"))
         self.save_history = save_hist
         self.allowed_exts = ["txt","pdf","docx"]
         self.available_models = {
@@ -82,11 +83,14 @@ class Model:
 
     def load_knowledge(self, path: str):
         files = os.listdir(path)
-        # read files as type
+
+    def extract_file_content(self, filepath):
+        from model.tools import extract_text
+        return extract_text(filepath)
+
     def save_history_to_json(self):
         # save only chat history not system instructtions 
         temp = self.history[1:]
-        import os
-        l = len(os.listdir("./model/histories"))
-        with open(f"./model/histories/{l}.json","w") as file :
+
+        with open(f"./model/histories/{self.id}.json","w") as file :
             json.dump(temp,file)

@@ -200,6 +200,14 @@
     .chat-input-area button:active { transform: scale(.95); }
     .chat-input-area button:disabled { background: #ccc; cursor: not-allowed; transform: none; }
 
+    .attach-btn { background: transparent !important; color: #888 !important; font-size: 20px !important; width: 40px !important; height: 40px !important; }
+    .attach-btn:hover { background: #f0f0f0 !important; color: #111 !important; transform: none !important; }
+
+    .file-preview { padding: 0 32px 8px; display: none; }
+    .file-chip { display: inline-flex; align-items: center; gap: 6px; background: #f0f0f0; border: 1px solid #e0e0e0; border-radius: 20px; padding: 4px 12px 4px 10px; font-size: 13px; color: #333; }
+    .file-chip .remove-file { cursor: pointer; color: #999; font-size: 15px; line-height: 1; margin-left: 2px; }
+    .file-chip .remove-file:hover { color: #e33; }
+
     .message-indent {
       width: 100%;
       height: 4px;
@@ -238,7 +246,11 @@
       <div class="message-indent"></div>
     </div>
 
+    <div class="file-preview" id="filePreview"></div>
+
     <div class="chat-input-area">
+      <input type="file" id="fileInput" hidden />
+      <button class="attach-btn" id="attachBtn" title="Attach a file">&#128206;</button>
       <input type="text" id="userInput" placeholder="Type a message..." autocomplete="off" />
       <button id="sendBtn" onclick="sendMessage()">&#10148;</button>
     </div>
@@ -249,11 +261,43 @@
     const messagesEl = document.getElementById('messages');
     const inputEl = document.getElementById('userInput');
     const sendBtn = document.getElementById('sendBtn');
+    const fileInput = document.getElementById('fileInput');
+    const attachBtn = document.getElementById('attachBtn');
+    const filePreview = document.getElementById('filePreview');
     const history = [];
+    let attachedFile = null;
 
     inputEl.addEventListener('keydown', e => {
       if (e.key === 'Enter') sendMessage();
     });
+
+    attachBtn.addEventListener('click', () => fileInput.click());
+
+    fileInput.addEventListener('change', async function () {
+      const file = this.files[0];
+      if (!file) return;
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const res = await fetch('/upload', { method: 'POST', body: formData });
+        const data = await res.json();
+        if (data.error) { alert(data.error); return; }
+
+        attachedFile = { name: data.filename, content: data.content, type: data.type };
+        filePreview.innerHTML = `<div class="file-chip">&#128196; ${data.filename} <span class="remove-file" onclick="removeFile()">&#10005;</span></div>`;
+        filePreview.style.display = 'block';
+      } catch (err) {
+        alert('Failed to upload file.');
+      }
+      this.value = '';
+    });
+
+    function removeFile() {
+      attachedFile = null;
+      filePreview.style.display = 'none';
+    }
 
     function addMessage(text, role, isTyping = false) {
       const div = document.createElement('div');
@@ -269,12 +313,20 @@
 
     async function sendMessage() {
       const text = inputEl.value.trim();
-      if (!text) return;
+      if (!text && !attachedFile) return;
 
+      let content = text;
+      if (attachedFile) {
+        const fileContext = `[Fichier joint: ${attachedFile.name}]\n\n--- Contenu du fichier ---\n${attachedFile.content}\n--- Fin du contenu ---\n\n`;
+        content = text ? `${fileContext}${text}` : `${fileContext}Voici le fichier que j'ai joint. Peux-tu m'en parler ?`;
+      }
+
+      const displayText = content.length > 222 ? content.slice(0, 222) + '...' : content;
       inputEl.value = '';
       sendBtn.disabled = true;
-      addMessage(text, 'user');
-      history.push({ role: 'user', content: text });
+      addMessage(displayText, 'user');
+      history.push({ role: 'user', content });
+      removeFile();
 
       const typingEl = addMessage('Typing...', 'bot', true);
 
