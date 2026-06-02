@@ -5,11 +5,13 @@ import json
 
 
 class Model:
-    def __init__(self, url="https://api.deepai.org/hacking_is_a_serious_crime"):
+    def __init__(self, save_hist = True,url="https://api.deepai.org/hacking_is_a_serious_crime"):
         self.url = url
+        self.save_history = save_hist
         self.allowed_exts = ["txt","pdf","docx"]
         self.available_models = {
-            "default": "standard",
+            "default": "online",
+            "standard":"standard",
             "gpt4": "",
             "ds3.2": "deepseek-v3.2",
             "gemini": "gemini-2.5-flash-lite",
@@ -20,6 +22,9 @@ class Model:
             {
                 "role": "system",
                 "content": self.instructions
+            },{
+                "role":"user",
+                "content":"bonjour"
             }
         ]
         self.headers = {
@@ -31,12 +36,17 @@ class Model:
             "Connection": "keep-alive"
         }
 
-    def get_answer(self, query, MODEL=None, filename=None):
+    def get_answer(self, query, MODEL=None):
         # add the user answer
         self.history.append({
             "role": "user",
-            "content": query
+            # "content": query
+            "content": f"n'oublier pas à respecter les instructions de système et de répondre juste à la question de l'utilisateur , répondre à : {query}"
         })
+        # history to json 
+        if self.save_history :
+            self.save_history_to_json()
+        
         # build new history
         new_hist = json.dumps(self.history)
         # print(str(new_hist))
@@ -73,3 +83,10 @@ class Model:
     def load_knowledge(self, path: str):
         files = os.listdir(path)
         # read files as type
+    def save_history_to_json(self):
+        # save only chat history not system instructtions 
+        temp = self.history[1:]
+        import os
+        l = len(os.listdir("./model/histories"))
+        with open(f"./model/histories/{l}.json","w") as file :
+            json.dump(temp,file)
