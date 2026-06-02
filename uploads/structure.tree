@@ -1,0 +1,50 @@
+rag-project/
+│
+├── app/                         # Application layer (API / entrypoint)
+│   ├── main.py                  # FastAPI / Flask entrypoint
+│   ├── routes/                  # API endpoints
+│   │   └── chat.py
+│   └── config.py                # env config, settings
+│
+├── rag/                         # Core RAG logic (main brain)
+│   ├── ingestion/               # Data loading pipeline
+│   │   ├── loader.py            # PDF, TXT, web loaders
+│   │   ├── cleaner.py           # text cleaning
+│   │   └── splitter.py          # chunking logic
+│   │
+│   ├── embeddings/             # Embedding logic
+│   │   ├── embedder.py         # embedding model wrapper
+│   │   └── models.py           # model selection (HF, OpenAI, etc.)
+│   │
+│   ├── vectorstore/            # Vector DB layer
+│   │   ├── faiss_store.py      # FAISS implementation
+│   │   ├── chroma_store.py     # optional ChromaDB
+│   │   └── base.py             # abstract interface
+│   │
+│   ├── retrieval/             # Search + ranking
+│   │   ├── retriever.py       # top-k search
+│   │   ├── reranker.py        # optional reranking model
+│   │
+│   ├── generation/            # LLM response generation
+│   │   ├── prompt_builder.py   # prompt formatting
+│   │   ├── llm.py             # model wrapper (Mistral, GPT, etc.)
+│   │
+│   └── pipeline.py            # FULL RAG pipeline orchestration
+│
+├── data/
+│   ├── raw/                    # original files (PDF, docs)
+│   ├── processed/              # cleaned + chunked data
+│   └── indexes/                # vector DB files (FAISS index, etc.)
+│
+├── tests/
+│   ├── test_ingestion.py
+│   ├── test_retrieval.py
+│   └── test_pipeline.py
+│
+├── scripts/
+│   ├── build_index.py          # run ingestion + embeddings
+│   ├── query_test.py           # CLI testing
+│
+├── requirements.txt
+├── .env
+└── README.md
