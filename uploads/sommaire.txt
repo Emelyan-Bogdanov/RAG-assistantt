@@ -1,0 +1,74 @@
+	
+- liste des tableaux 5
+- list des figures 6
+- résumé 7
+- abstract 8
+- glossiare 9
+- introduction 11
+	- presentation de l'entreprise
+	- fiche technique
+	- organigramme
+	- ...
+	- model de language
+	- model de language profond
+	- Vector database
+- RAG
+- Fine Tunning
+- comment ça fonctionne RAG
+- 
+- model pre entrainée
+- prompt engineering
+- lang chain
+- Partie 1 : création chatbot
+	- contexte du chatbot
+	- analyse de l'existant
+	- avant propos : 
+		- presentation des technologies
+		- introduction à data.gov.ma
+	- avant RAG
+	- parametres du model
+	- préparation de structure de projet
+	- implémentation du model
+		- question answering
+		- BERT :
+			- bibiothèques de BERT en python
+			- tokenisation des données
+			- data loader
+			- training loop
+			- fonction de classification de texte
+	- diagrammes 
+		- diagramme d'activité
+		- diagrammes...
+	- conclusion
+- Partie 2 : mise en place de moteur d'in...
+	- comment ça fonctionne Lucene
+	- technologies et materiel
+	- exigences fonctionnels
+	- conclusion.
+- Partie 3 : gestionnaire de projets
+	- contexte et problématique
+	- technologies et matériels
+		- ElectronJs
+		- Flask
+		- ChartJs
+	- besoins fonctionnels
+		- tableau des tâches kanban
+		- création et gestion des tâches
+		- upload des fichiers
+	- architecture du système
+		- vue d'ensemble
+		- composantes principales
+		- spécification techniques
+			- stack technologique detaillé
+			- description des technologies utilisés
+		- fonctionnalités implémenté
+		- cas de tests
+		- défis techniques
+	- récapulatif
+		- réalisation
+		- enseignement et apprentissage
+		- perspective et amélioration future
+	conclusion partie 3 
+		
+	
+	
